@@ -54,6 +54,11 @@ public:
 private:
 	float lowerLoadThreshold = .65f;
 	float upperLoadThreshold = .85f;
+	int primes[50] = {
+		61, 71, 83, 97, 107, 113, 127, 137, 151, 163, 173, 181, 191, 199, 211, 223, 229, 239, 241,257,269,277,293,307
+		313,331,347,353,367,383,397,409,421,433,443,457,467,487,488,509,523,547,791,1009,1223,1553,1999,2273, 2543,3001
+	};
+	int numPrimes = 50;
 
 	unsigned int tableSize = BASE_SIZE;
 	unsigned int currentNodeCount = 0;

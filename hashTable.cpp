@@ -95,15 +95,24 @@ void hashTable::deleteContract(std::string clientName) {
 	*/
 }
 void hashTable::deleteTable() {
-	/*
-		Iterate through array, delete all LLs present
-		and then delete the entire table, freeing memory
-	*/
+	for (int i = 0; i < tableSize; i++) {
+		if (HashTable[i] == nullptr)
+		{
+			continue;
+		}
+		dellLL(HashTable[i]->head);
+	}
+	delete[] HashTable;
+	HashTable = nullptr;
 }
 void hashTable::deleteLL(llNode* head) {
-	/*
-		Delete an entire linked list starting from the head
-	*/
+	llNode* curr, next;
+	next = head;
+	while (next != nullptr) {
+		curr = next;
+		next = curr->next;
+		delete curr;
+	}
 }
 
 int main() {
