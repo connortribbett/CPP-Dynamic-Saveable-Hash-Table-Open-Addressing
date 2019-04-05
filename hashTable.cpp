@@ -37,11 +37,16 @@ unsigned int hashTable::hash(std::string key) {
 	return hash;
 }
 int hashTable::quadraticProbe(int startIndex) {
-	/*
-		Quadratically probes until an empty node is found
-		if no node is found before the end of the table
-		call the function again at startIndex+1
-	*/
+	if (startIndex >= tableSize) {
+		return quadraticProbe(0);
+	}
+	for (int i = 1; startIndex + (i*i) < tableSize; i++)
+	{
+		if (HashTable[startIndex + (i*i)] == nullptr) {
+			return startIndex + (i*i);
+		}
+	}
+	return quadraticProbe(startIndex + 1);
 }
 
 void hashTable::checkLoad() {
@@ -56,7 +61,7 @@ void hashTable::checkLoad() {
 	}
 	return;
 }
-void hashTable::resize(bool factor) { //False = resize to smaller table, True = resize to bigger table
+void hashTable::resize(bool factor) {
 	/*
 		If true, resizes the array to the next largest prime that results in a load factor inside the bounds
 		if false, resizes the array to the next lowest prime that results in a good load factor
@@ -73,26 +78,67 @@ void hashTable::addFromFile(std::string filename) {
 		Adds all records from a file to the hash table
 	*/
 }
-void hashTable::addEmployee(std::string name, float salary, float comission) {
-	/*
-		Adds a new node in the hash table for an employee
-		if table is null, create one of base size
-	*/
+void hashTable::addEmployee(std::string name, float salary, float commission) {
+	if (HashTable == nullptr) {
+		setupTable();
+	}
+	hashNode *newNode = new hasNode;
+	newNode->setNode(name, salary, commission);
+	currentNodeCount++;
+	checkLoad();
+	int index = hash(name);
+	if (HashTable[index] != nullptr) {
+		index = quadraticProbe(index);
+	}
+	HashTable[index] = newNode;
 }
 void hashTable::addContract(std::string parentName, std::string clientName, float value) {
-	/*
-		Add a contract LL node to an existing employee node based on their name
-	*/
+	if (HashTable == nullptr) {
+		return;
+	}
+	hashNode *parent; //= searchEmployees(parentName) 
+	if (parent == nullptr) {
+		return;
+	}
+	llNode *pPrev;
+	llNode *newNode = new llNode;
+	newNode->setNode(clientName, value);
+	if (parent->head == nullptr) {
+		parent->head = newNode;
+		newNode->prev = nullptr;
+		newNode->next = nullptr;
+		return;
+	}
+	else {
+		pPrev = parent->head;
+		while (pPrev->next != nullptr) {
+			pPrev = pPrev->next;
+		}
+		pPrev->next = newNode;
+		newNode->prev = pPrev;
+		newNode->next = nullptr;
+	}
+	return;
 }
 void hashTable::deleteEmployee(std::string name) {
-	/*
-		delete an employee record and all contracts based on their name
-	*/
+	hashNode *toDel; //= searchemployees(parentName);
+	if (toDel == nullptr) {
+		return;
+	}
+	deleteLL(toDel->head);
+	delete toDel;
+	return;
 }
-void hashTable::deleteContract(std::string clientName) {
-	/*
-		Delete a contract LL node based on the client name
-	*/
+void hashTable::deleteContract(std::string parent, std::string clientName) {
+	llNode *toDel; //=searchContract(clientName)
+	hashNode *toDelHashNode; //=searchEmployees(parent)
+	if (toDel->prev == nullptr) {
+		delete toDel;
+		toDelHashNode->head == nullptr;
+		return;
+	}
+	toDel->prev->next = toDel->next;
+	delete toDel;
 }
 void hashTable::deleteTable() {
 	for (int i = 0; i < tableSize; i++) {
@@ -106,6 +152,9 @@ void hashTable::deleteTable() {
 	HashTable = nullptr;
 }
 void hashTable::deleteLL(llNode* head) {
+	if (head == nullptr) {
+		return;
+	}
 	llNode* curr, next;
 	next = head;
 	while (next != nullptr) {
