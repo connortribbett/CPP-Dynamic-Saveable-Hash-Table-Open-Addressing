@@ -4,12 +4,13 @@ hashTable::hashTable() {
 	setupTable();
 }
 hashTable::hashTable(std::string filename) {
-	ifstream inFile;
+	std::ifstream inFile;
 	inFile.open(filename.c_str());
 	if (inFile.is_open()) {
 		std::string input;
 		int size;
-		inFile << input;
+		getline(inFile, input, '\n');
+		//inFile << input;
 		size = stoi(input);
 		if (size > BASE_SIZE) {
 			tableSize = size;
@@ -62,6 +63,12 @@ void hashTable::checkLoad() {
 	return;
 }
 void hashTable::resize(bool factor) {
+	if (factor) { //upsizing
+
+	}
+	else { //downsizing
+
+	}
 	/*
 		If true, resizes the array to the next largest prime that results in a load factor inside the bounds
 		if false, resizes the array to the next lowest prime that results in a good load factor
@@ -79,13 +86,13 @@ void hashTable::addFromFile(std::string filename) {
 	*/
 }
 hashNode* hashTable::searchEmployeeByName(std::string employeeName) {
-	index = hash(employeeName);
-	if (hashTable[index]->employeeName == employeeName) {
-		return hashTable[index];
+	int index = hash(employeeName);
+	if (HashTable[index]->employeeName == employeeName) {
+		return HashTable[index];
 	}
 	for (int i = 1; (index + (i*i)) < tableSize; i++) {
-		if (hashTable[index + (i*i)]->employeename == employeeName) {
-			return hashTable[index + (i*i)];
+		if (HashTable[index + (i*i)]->employeeName == employeeName) {
+			return HashTable[index + (i*i)];
 		}
 
 		if (index + (i*i) >= tableSize) {
@@ -104,7 +111,7 @@ void hashTable::addEmployee(std::string name, float salary, float commission) {
 	if (HashTable == nullptr) {
 		setupTable();
 	}
-	hashNode *newNode = new hasNode;
+	hashNode *newNode = new hashNode;
 	newNode->setNode(name, salary, commission);
 	currentNodeCount++;
 	checkLoad();
@@ -128,7 +135,7 @@ void hashTable::addContract(std::string parentName, std::string clientName, floa
 	return;
 }
 void hashTable::deleteEmployee(std::string name) {
-	hashNode *toDel = searchEmployeeByName(parentName);
+	hashNode *toDel = searchEmployeeByName(name);
 	if (toDel == nullptr) {
 		return;
 	}

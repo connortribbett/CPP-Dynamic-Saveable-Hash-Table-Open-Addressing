@@ -42,11 +42,11 @@ private:
 	float lowerLoadThreshold = .65f;
 	float upperLoadThreshold = .85f;
 	float loadFactor = 0.0;
-	int primes[50] = {
-		61, 71, 83, 97, 107, 113, 127, 137, 151, 163, 173, 181, 191, 199, 211, 223, 229, 239, 241,257,269,277,293,307
-		313,331,347,353,367,383,397,409,421,433,443,457,467,487,488,509,523,547,791,1009,1223,1553,1999,2273, 2543,3001
+	int primes[19] = {
+		61, 97, 151, 211,257,307,
+		353,409,457,509,547,791,1009,1223,1553,1999,2273, 2543,3001
 	};
-	int numPrimes = 50;
+	int numPrimes = 19;
 	int currPrime = -1; //-1 = BASE_SIZE, otherwise corresponding index to primes array
 
 	unsigned int tableSize = BASE_SIZE;
