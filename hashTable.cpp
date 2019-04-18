@@ -78,6 +78,28 @@ void hashTable::addFromFile(std::string filename) {
 		Adds all records from a file to the hash table
 	*/
 }
+hashNode* hashTable::searchEmployeeByName(std::string employeeName) {
+	index = hash(employeeName);
+	if (hashTable[index]->employeeName == employeeName) {
+		return hashTable[index];
+	}
+	for (int i = 1; (index + (i*i)) < tableSize; i = i * i) {
+		if (hashTable[index]->employeename == employeeName) {
+			return hashTable[index];
+		}
+
+		if (index + (i*i) >= tableSize) {
+			if (index + i >= tableSize) {
+				index = 0;
+				i = 0;
+			}
+			else {
+				index++;
+				i = 0;
+			}
+		}
+	}
+}
 void hashTable::addEmployee(std::string name, float salary, float commission) {
 	if (HashTable == nullptr) {
 		setupTable();
@@ -96,72 +118,29 @@ void hashTable::addContract(std::string parentName, std::string clientName, floa
 	if (HashTable == nullptr) {
 		return;
 	}
-	hashNode *parent; //= searchEmployees(parentName) 
+	hashNode *parent = searchEmployeeByName(parentName);
 	if (parent == nullptr) {
 		return;
 	}
-	llNode *pPrev;
-	llNode *newNode = new llNode;
-	newNode->setNode(clientName, value);
-	if (parent->head == nullptr) {
-		parent->head = newNode;
-		newNode->prev = nullptr;
-		newNode->next = nullptr;
-		return;
-	}
-	else {
-		pPrev = parent->head;
-		while (pPrev->next != nullptr) {
-			pPrev = pPrev->next;
-		}
-		pPrev->next = newNode;
-		newNode->prev = pPrev;
-		newNode->next = nullptr;
-	}
+	llNode newNode;
+	newNode.setNode(clientName, value);
+	parent->contracts.push_back(newNode);
 	return;
 }
 void hashTable::deleteEmployee(std::string name) {
-	hashNode *toDel; //= searchemployees(parentName);
+	hashNode *toDel = searchEmployeeByName(parentName);
 	if (toDel == nullptr) {
 		return;
 	}
-	deleteLL(toDel->head);
 	delete toDel;
 	return;
 }
 void hashTable::deleteContract(std::string parent, std::string clientName) {
-	llNode *toDel; //=searchContract(clientName)
-	hashNode *toDelHashNode; //=searchEmployees(parent)
-	if (toDel->prev == nullptr) {
-		delete toDel;
-		toDelHashNode->head == nullptr;
-		return;
-	}
-	toDel->prev->next = toDel->next;
-	delete toDel;
+
 }
 void hashTable::deleteTable() {
-	for (int i = 0; i < tableSize; i++) {
-		if (HashTable[i] == nullptr)
-		{
-			continue;
-		}
-		dellLL(HashTable[i]->head);
-	}
 	delete[] HashTable;
 	HashTable = nullptr;
-}
-void hashTable::deleteLL(llNode* head) {
-	if (head == nullptr) {
-		return;
-	}
-	llNode* curr, next;
-	next = head;
-	while (next != nullptr) {
-		curr = next;
-		next = curr->next;
-		delete curr;
-	}
 }
 
 int main() {
