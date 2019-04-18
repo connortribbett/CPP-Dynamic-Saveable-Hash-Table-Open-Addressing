@@ -150,7 +150,40 @@ void hashTable::deleteTable() {
 	HashTable = nullptr;
 	tableSize = BASE_SIZE;
 }
-
+void hashTable::listTable() {
+	for (int i = 0; i < tableSize; i++) {
+		if (HashTable[i] != NULL) {
+			std::cout << "==============" << std::endl;
+			std::cout << "Employee : " << HashTable[i]->employeeName << " Salary : $" << HashTable[i]->baseSalary << " Commission: " << HashTable[i]->commissionRate * 100 << "%"<< std::endl;
+			if (HashTable[i]->contracts.size() > 0) {
+				for (auto v : HashTable[i]->contracts) {
+					std::cout << "Client Name: " << v.clientName << " Value: $" << v.contractValue << std::endl;
+				}
+				std::cout << "==============" << std::endl;
+			}
+		}
+	}
+}
 int main() {
+	hashTable table;
+	table.addEmployee("jerry", 0.0, 0.1);
+	table.addEmployee("berry", 50000, 0.1);
+	table.addEmployee("gerry", 50000, 0.12);
+	table.addEmployee("terry", 40000, 0.12);
+	table.addEmployee("lerry", 45000, 0.15);
+	table.addEmployee("herry", 45000, 0.2);
+	table.addEmployee("zak", 100000, .15);
+	table.addContract("jerry", "Rick", 100);
+	table.addContract("berry", "Mick", 300);
+	table.addContract("gerry", "Tick", 500);
+	table.addContract("terry", "Lick", 1000);
+	table.addContract("lerry", "Pick", 0.0);
+	table.addContract("herry", "Wick", 0.0);
+	table.addContract("zak", "Rick", 0.0);
+	table.addContract("zak", "Rick", 200000);
+	table.addContract("zak", "Sun Systems", 200000);
+	table.addContract("zak", "Eating Tofu", 400000);
+	table.addContract("zak", "Chipotle", 600000);
+	table.listTable();
 	return 0;
 }

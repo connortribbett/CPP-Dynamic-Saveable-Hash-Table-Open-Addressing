@@ -4,11 +4,12 @@
 #include<string>
 #include<list>
 #include<fstream>
+#include<iostream>
 
 struct llNode {
 	std::string clientName;
 	float contractValue;
-	setNode(std::string name, float value)
+	void setNode(std::string name, float value)
 	{
 		this->clientName = name;
 		this->contractValue = value;
@@ -19,7 +20,7 @@ struct hashNode {
 	std::string employeeName;
 	float baseSalary;
 	float commissionRate;
-	setNode(std::string name, float salary, float commission) {
+	void setNode(std::string name, float salary, float commission) {
 		this->baseSalary = salary;
 		this->commissionRate = commission;
 		this->employeeName = name;
@@ -37,6 +38,7 @@ public:
 	void deleteContract(std::string parent, std::string clientName);
 	void saveTable(std::string filename);
 	void addFromFile(std::string filename);
+	void listTable();
 
 private:
 	float lowerLoadThreshold = .65f;
