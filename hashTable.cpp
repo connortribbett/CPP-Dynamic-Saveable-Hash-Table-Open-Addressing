@@ -83,9 +83,9 @@ hashNode* hashTable::searchEmployeeByName(std::string employeeName) {
 	if (hashTable[index]->employeeName == employeeName) {
 		return hashTable[index];
 	}
-	for (int i = 1; (index + (i*i)) < tableSize; i = i * i) {
-		if (hashTable[index]->employeename == employeeName) {
-			return hashTable[index];
+	for (int i = 1; (index + (i*i)) < tableSize; i++) {
+		if (hashTable[index + (i*i)]->employeename == employeeName) {
+			return hashTable[index + (i*i)];
 		}
 
 		if (index + (i*i) >= tableSize) {
@@ -141,6 +141,7 @@ void hashTable::deleteContract(std::string parent, std::string clientName) {
 void hashTable::deleteTable() {
 	delete[] HashTable;
 	HashTable = nullptr;
+	tableSize = BASE_SIZE;
 }
 
 int main() {
