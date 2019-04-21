@@ -75,15 +75,89 @@ void hashTable::resize(bool factor) {
 	*/
 }
 void hashTable::saveTable(std::string filename) {
-	/*
-		Saves entire current table
-		employee records followed by all of their contract records
-	*/
+	std::ofstream write (filename);
+	if (write.is_open()) {
+		write << tableSize << "\n";
+	}
+	for (int i = 0; i < tableSize; i++) {
+		if (HashTable[i] != NULL) {
+			
+			write << "Employee," << HashTable[i]->employeeName << "," << HashTable[i]->baseSalary << "," << HashTable[i]->commissionRate << "\n";
+			if (HashTable[i]->contracts.size() > 0) {
+				for (auto v : HashTable[i]->contracts) {
+					write << "Contract," << HashTable[i]->employeeName << "," << v.clientName << "," << v.contractValue << "\n";
+				}
+				
+			}
+		}
+	}
 }
 void hashTable::addFromFile(std::string filename) {
-	/*
-		Adds all records from a file to the hash table
-	*/
+	std::ifstream load (filename);
+	if (load.is_open()) {
+		std::string line;
+		getline(load, line);
+		//line here = tablesize
+		while(getline(load, line)) {
+			std::string type = "null";
+			int pos1 = 0;
+			int pos2 = 0;
+			for (int i = 0; i < line.length(); i++) {
+				if (line[i] == ',') {
+					type = line.substr(0, i);
+					i = 1000;
+				}
+				if (type == "Employee") {
+					std::string name;
+					float salary;
+					float commission;
+					for (int t = 0; t < line.length(); t++) {
+						if (line[t] == ',' && pos1 == 2) {
+							pos1++;
+							salary = stof(line.substr(pos2+1, t - pos2 - 1));
+							pos2 = t;
+							commission = stof(line.substr(t+1, 100));
+						}
+						if (line[t] == ',' && pos1 == 1) {
+							pos1++;
+							name = line.substr(pos2 + 1, t - pos2 - 1);
+							pos2 = t;
+						}
+						if (line[t] == ',' && pos1 == 0) {
+
+							pos1++;
+							pos2 = t;
+						}
+					}
+					addEmployee(name, salary, commission);
+				}
+				if (type == "Contract") {
+					std::string name;
+					std::string clientName;
+					float value;
+					for (int t = 0; t < line.length(); t++) {
+						if (line[t] == ',' && pos1 == 2) {
+							pos1++;
+							clientName = line.substr(pos2+1, t - pos2 - 1);
+							pos2 = t;
+							value = stof(line.substr(t+1, 100));
+						}
+						if (line[t] == ',' && pos1 == 1) {
+							pos1++;
+							name = line.substr(pos2 + 1, t - pos2 - 1);
+							pos2 = t;
+						}
+						if (line[t] == ',' && pos1 == 0) {
+
+							pos1++;
+							pos2 = t;
+						}
+					}
+					addContract(name, clientName, value);
+				}	
+			}
+		}
+	}
 }
 hashNode* hashTable::searchEmployeeByName(std::string employeeName) {
 	int index = hash(employeeName);
@@ -107,6 +181,7 @@ hashNode* hashTable::searchEmployeeByName(std::string employeeName) {
 		}
 	}
 }
+
 void hashTable::addEmployee(std::string name, float salary, float commission) {
 	if (HashTable == nullptr) {
 		setupTable();
@@ -154,36 +229,22 @@ void hashTable::listTable() {
 	for (int i = 0; i < tableSize; i++) {
 		if (HashTable[i] != NULL) {
 			std::cout << "==============" << std::endl;
-			std::cout << "Employee : " << HashTable[i]->employeeName << " Salary : $" << HashTable[i]->baseSalary << " Commission: " << HashTable[i]->commissionRate * 100 << "%"<< std::endl;
+			std::cout << "Employee : (" << HashTable[i]->employeeName << ") Salary : $" << HashTable[i]->baseSalary << " Commission: " << HashTable[i]->commissionRate * 100 << "%"<< std::endl;
 			if (HashTable[i]->contracts.size() > 0) {
 				for (auto v : HashTable[i]->contracts) {
-					std::cout << "Client Name: " << v.clientName << " Value: $" << v.contractValue << std::endl;
+					std::cout << "Client Name: (" << v.clientName << ") Value: $" << v.contractValue << std::endl;
 				}
-				std::cout << "==============" << std::endl;
+				
 			}
+			std::cout << "==============" << std::endl;
 		}
 	}
 }
-int main() {
+int main(int argc, char* argv[]) {
+	std::string filename = argv[1];
 	hashTable table;
-	table.addEmployee("jerry", 0.0, 0.1);
-	table.addEmployee("berry", 50000, 0.1);
-	table.addEmployee("gerry", 50000, 0.12);
-	table.addEmployee("terry", 40000, 0.12);
-	table.addEmployee("lerry", 45000, 0.15);
-	table.addEmployee("herry", 45000, 0.2);
-	table.addEmployee("zak", 100000, .15);
-	table.addContract("jerry", "Rick", 100);
-	table.addContract("berry", "Mick", 300);
-	table.addContract("gerry", "Tick", 500);
-	table.addContract("terry", "Lick", 1000);
-	table.addContract("lerry", "Pick", 0.0);
-	table.addContract("herry", "Wick", 0.0);
-	table.addContract("zak", "Rick", 0.0);
-	table.addContract("zak", "Rick", 200000);
-	table.addContract("zak", "Sun Systems", 200000);
-	table.addContract("zak", "Eating Tofu", 400000);
-	table.addContract("zak", "Chipotle", 600000);
+	table.addFromFile(filename);
+	table.saveTable("test.txt");
 	table.listTable();
 	return 0;
 }

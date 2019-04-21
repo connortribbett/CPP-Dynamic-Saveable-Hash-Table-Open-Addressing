@@ -1,0 +1,5 @@
+53
+Employee,Zak Flitter,10000,.128
+Contract,Zak Flitter,Sun Systems,10000
+Employee,Bob Marley,15000,.1
+Contract,Bob Marley,Apple,1000000
