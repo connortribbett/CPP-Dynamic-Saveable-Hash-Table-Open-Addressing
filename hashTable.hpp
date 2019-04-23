@@ -44,7 +44,7 @@ public:
 	void employeePrintSearch(int compareFlag, int valueFlag, float searchValue);
 	void contractPrintSearchValue(int compareFlag, float searchValue);
 	void contractPrintSearchName(std::string name);
-	void contractPrintHelp(std::vector<llNode> toPrint);
+	void contractPrintHelp(std::vector<llNode> toPrint, std::vector<std::string> owners);
 
 private:
 	float lowerLoadThreshold = .65f;
@@ -62,7 +62,7 @@ private:
 	void resize(bool factor);
 	void deleteTable();
 	void setupTable();
-	
+
 };
 
 #endif

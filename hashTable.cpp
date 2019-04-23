@@ -56,14 +56,10 @@ void hashTable::checkLoad() {
 
 	if (loadFactor < lowerLoadThreshold) {
 		if (tableSize != BASE_SIZE) {
-			std::cout << "Current Nodes:" << currentNodeCount << " size:" << tableSize << std::endl;
-			std::cout << "Load Factor, downsizing: " << loadFactor << std::endl;
 			resize(false);
 		}
 	}
 	else if (loadFactor > upperLoadThreshold) {
-		std::cout << "Current Nodes:" << currentNodeCount << " size:" << tableSize << std::endl;
-		std::cout << "Load Factor, upsizing: " << loadFactor << std::endl;
 		resize(true);
 	}
 	return;
@@ -71,7 +67,7 @@ void hashTable::checkLoad() {
 void hashTable::resize(bool factor) {
 	int optSize = currentNodeCount * 1.33;
 	int oldSize = tableSize;
-	
+
 	if (optSize <= BASE_SIZE) {
 		optSize = BASE_SIZE;
 	}
@@ -85,7 +81,6 @@ void hashTable::resize(bool factor) {
 	}
 	tableSize = optSize;
 
-	std::cout << "Resizing from " << oldSize << " to " << tableSize << std::endl;
 	std::vector<hashNode> oldTable;
 	for (int i = 0; i < oldSize; i++) {
 		if (HashTable[i] != nullptr) {
@@ -93,7 +88,6 @@ void hashTable::resize(bool factor) {
 			oldTable.push_back(*HashTable[i]);
 		}
 	}
-	std::cout << "Old nodes being transfered: " << oldTable.size() << std::endl;
 	deleteTable();
 	setupTable();
 	std::list<llNode>::iterator it2;
@@ -222,7 +216,7 @@ void hashTable::addEmployee(std::string name, float salary, float commission, bo
 	hashNode *newNode = new hashNode;
 	newNode->setNode(name, salary, commission);
 	currentNodeCount++;
-	
+
 	int index = hash(name);
 	if (HashTable[index] != nullptr) {
 		index = quadraticProbe(index);
@@ -231,7 +225,7 @@ void hashTable::addEmployee(std::string name, float salary, float commission, bo
 	if (!resize) {
 		checkLoad();
 	}
-	
+
 }
 void hashTable::addContract(std::string parentName, std::string clientName, float value) {
 	if (HashTable == nullptr) {
@@ -285,7 +279,7 @@ void hashTable::deleteContract(std::string parent, std::string clientName) {
 		return;
 	}
 	if (parentNode->contracts.size() > 0) {
-		std::list<llNode>::iterator it; 
+		std::list<llNode>::iterator it;
 		for (it = parentNode->contracts.begin(); it != parentNode->contracts.end(); ++it) {
 			if (it->clientName == clientName) {
 				parentNode->contracts.erase(it);
@@ -303,7 +297,7 @@ void hashTable::listTable() {
 	for (int i = 0; i < tableSize; i++) {
 		if (HashTable[i] != nullptr) {
 			std::cout << "==============" << std::endl;
-			std::cout << "Employee : " << HashTable[i]->employeeName << " Salary : $" << HashTable[i]->baseSalary << " Commission: " << HashTable[i]->commissionRate * 100 << "%"<< std::endl;
+			std::cout << "Employee : " << HashTable[i]->employeeName << " Salary : $" << HashTable[i]->baseSalary << " Commission: " << HashTable[i]->commissionRate * 100 << "%" << std::endl;
 			if (HashTable[i]->contracts.size() > 0) {
 				std::list<llNode>::iterator it;
 				for (it = HashTable[i]->contracts.begin(); it != HashTable[i]->contracts.end(); ++it) {
@@ -369,11 +363,11 @@ void hashTable::employeePrintSearch(int compareFlag, int valueFlag, float search
 
 	std::cout << "Found " << toPrint.size() << " records matching your query:" << std::endl;
 	for (int i = 0; i < toPrint.size(); i++) {
-		std::cout << toPrint[i].employeeName << "- Base Salary: " << toPrint[i].baseSalary << " Comission Rate: " << toPrint[i].commissionRate << std::endl;
+		std::cout << toPrint[i].employeeName << " - Base Salary: " << toPrint[i].baseSalary << " Comission Rate: " << toPrint[i].commissionRate << std::endl;
 		if (toPrint[i].contracts.size() > 0) {
 			std::list<llNode>::iterator it;
 			for (it = toPrint[i].contracts.begin(); it != toPrint[i].contracts.end(); ++it) {
-				std::cout << "-- " << it->clientName << "- Value: " << it->contractValue << std::endl;
+				std::cout << "--" << it->clientName << " - Value: " << it->contractValue << std::endl;
 			}
 		}
 	}
@@ -385,7 +379,7 @@ void hashTable::employeePrintByName(std::string name) {
 		if (search->contracts.size() > 0) {
 			std::list<llNode>::iterator it;
 			for (it = search->contracts.begin(); it != search->contracts.end(); ++it) {
-				std::cout << "-- " << it->clientName << "- Value: " << it->contractValue << std::endl;
+				std::cout << "--" << it->clientName << " - Value: " << it->contractValue << std::endl;
 			}
 		}
 	}
@@ -393,14 +387,70 @@ void hashTable::employeePrintByName(std::string name) {
 		std::cout << "Employee of name " << name << " not found." << std::endl;
 	}
 }
-void contractPrintSearchValue(int compareFlag, float searchValue) {
+void hashTable::contractPrintSearchValue(int compareFlag, float searchValue) {
+	std::vector<llNode> toPrint;
+	std::vector<std::string> owners;
+	bool match = false;
 
+	for (int i = 0; i < tableSize; i++) {
+		if (HashTable[i] != nullptr) {
+			if (HashTable[i]->contracts.size() > 0) {
+
+				std::list<llNode>::iterator it;
+				for (it = HashTable[i]->contracts.begin(); it != HashTable[i]->contracts.end(); ++it) {
+					match = false;
+					switch (compareFlag) {
+					case -1:
+						if (it->contractValue <= searchValue) {
+							match = true;
+						}
+						break;
+					case 0:
+						if (it->contractValue == searchValue) {
+							match = true;
+						}
+						break;
+					case 1:
+						if (it->contractValue >= searchValue) {
+							match = true;
+						}
+						break;
+					default:
+						break;
+					}
+					if (match) {
+						toPrint.push_back(*it);
+						owners.push_back(HashTable[i]->employeeName);
+					}
+				}
+			}
+		}
+	}
+	contractPrintHelp(toPrint, owners);
 }
-void contractPrintSearchName(std::string name) {
-
+void hashTable::contractPrintSearchName(std::string name) {
+	std::vector<llNode> toPrint;
+	std::vector<std::string> owners;
+	for (int i = 0; i < tableSize; i++) {
+		if (HashTable[i] != nullptr) {
+			if (HashTable[i]->contracts.size() > 0) {
+				std::list<llNode>::iterator it;
+				for (it = HashTable[i]->contracts.begin(); it != HashTable[i]->contracts.end(); ++it) {
+					if (it->clientName == name) {
+						toPrint.push_back(*it);
+						owners.push_back(HashTable[i]->employeeName);
+					}
+				}
+			}
+		}
+	}
+	contractPrintHelp(toPrint, owners);
 }
-void contractPrintHelp(std::vector<llNode> toPrint) {
-
+void hashTable::contractPrintHelp(std::vector<llNode> toPrint, std::vector<std::string> owners) {
+	std::cout << "Found " << toPrint.size() << " contracts matching your qeury:" << std::endl;
+	for (int i = 0; i < toPrint.size(); i++) {
+		std::cout << "Contract Owner: " << owners[i] << " -- " << toPrint[i].clientName << " - Value: " << toPrint[i].contractValue << std::endl;
+	}
 }
 int menu(int id) {
 	if (id == 0) {
@@ -420,7 +470,8 @@ int menu(int id) {
 			if (response != "1" && response != "2" && response != "3" && response != "4" && response != "5" && response != "6" && response != "7" && response != "8" && response != "9") {
 				std::cout << "Please select a digit" << std::endl;
 				std::cin >> response;
-			} else {
+			}
+			else {
 				flag = 1;
 			}
 		}
@@ -438,70 +489,16 @@ int menu(int id) {
 			if (response != "1" && response != "2" && response != "3" && response != "4") {
 				std::cout << "Please select a digit" << std::endl;
 				std::cin >> response;
-			} else {
+			}
+			else {
 				flag = 1;
 			}
 		}
-		return stoi(response);		
+		return stoi(response);
 	}
 }
 int main() {
 	hashTable table;
-	/*table.addEmployee("jerry", 0.0, 0.1, false);
-	table.addEmployee("berry", 50000, 0.1, false);
-	table.addEmployee("gerry", 50000, 0.12, false);
-	table.addEmployee("terry", 40000, 0.12, false);
-	table.addEmployee("lerry", 45000, 0.15, false);
-	table.addEmployee("herry", 45000, 0.2, false);
-	table.addEmployee("aak", 100000, .15, false);
-	table.addEmployee("bak", 100000, .15, false);
-	table.addEmployee("cak", 100000, .15, false);
-	table.addEmployee("dak", 100000, .15, false);
-	table.addEmployee("eak", 100000, .15, false);
-	table.addEmployee("fak", 100000, .15, false);
-	table.addEmployee("gak", 100000, .15, false);
-	table.addEmployee("hak", 100000, .15, false);
-	table.addEmployee("iak", 100000, .15, false);
-	table.addEmployee("jak", 100000, .15, false);
-	table.addEmployee("kak", 100000, .15, false);
-	table.addEmployee("lak", 100000, .15, false);
-	table.addEmployee("mak", 100000, .15, false);
-	table.addEmployee("nak", 100000, .15, false);
-	table.addEmployee("oak", 100000, .15, false);
-	table.addEmployee("pak", 100000, .15, false);
-	table.addEmployee("qak", 100000, .15, false);
-	table.addEmployee("rak", 100000, .15, false);
-	table.addEmployee("sak", 100000, .15, false);
-	table.addEmployee("tak", 100000, .15, false);
-	table.addEmployee("uak", 100000, .15, false);
-	table.addEmployee("vak", 100000, .15, false);
-	table.addEmployee("wak", 100000, .15, false);
-	table.addEmployee("xak", 100000, .15, false);
-	table.addEmployee("zk", 100000, .15, false);
-	table.addEmployee("bzak", 100000, .15, false);
-	table.addEmployee("zbbak", 100000, .15, false);
-	table.addEmployee("zabak", 100000, .15, false);
-	table.addEmployee("zdsbdsbak", 100000, .15, false);
-	table.addEmployee("zasssk", 100000, .15, false);
-	table.addEmployee("zahhk", 100000, .15, false);
-	table.addEmployee("zaggk", 100000, .15, false);
-	table.addEmployee("zakzzd", 100000, .15, false);
-	table.addEmployee("zakfsa", 100000, .15, false);
-	table.addEmployee("zagddk", 100000, .15, false);
-	table.addEmployee("zaewtk", 100000, .15, false);
-	table.addEmployee("zayywk", 100000, .15, false);
-	table.addEmployee("zakrt3", 100000, .15, false);
-	table.addEmployee("zakwqr", 100000, .15, false);
-	table.addEmployee("zakasz", 100000, .15, false);
-	table.addEmployee("zakfffff", 100000, .15, false);
-	table.addEmployee("zakdsfdd3", 100000, .15, false);
-	table.addEmployee("zak43", 100000, .15, false);
-*/
-
-	//table.addFromFile("file.txt");
-	//table.saveTable("saved.txt");
-	
-	//table.employeePrintSearch(1, 1, 15000);
 	for (int i = 0; i > -1; i++) {
 		int response = menu(0);
 		if (response == 1) {
@@ -543,13 +540,13 @@ int main() {
 			std::cin >> t;
 			float commission;
 			commission = stof(t);
-			table.addContract(name, client, commission);			
+			table.addContract(name, client, commission);
 		}
 		if (response == 5) {
 			std::cout << "Employee Name?" << std::endl;
 			std::string name;
 			std::cin >> name;
-			table.deleteEmployee(name);			
+			table.deleteEmployee(name);
 		}
 		if (response == 6) {
 			std::cout << "Employee Name?" << std::endl;
@@ -609,7 +606,7 @@ int main() {
 				float value;
 				std::cin >> response;
 				value = stof(response);
-				table.contractPrintSearchValue(b, value);			
+				table.contractPrintSearchValue(b, value);
 			}
 			if (choice == 4) {
 				std::cout << "Name?" << std::endl;
@@ -617,7 +614,7 @@ int main() {
 				std::cin >> name;
 				table.contractPrintSearchName(name);
 			}
-		} 
+		}
 		if (response == 8) {
 			table.listTable();
 		}
