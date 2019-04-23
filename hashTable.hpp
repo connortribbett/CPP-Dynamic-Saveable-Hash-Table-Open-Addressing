@@ -3,6 +3,7 @@
 #define BASE_SIZE 53 
 #include<string>
 #include<list>
+#include<vector>
 #include<fstream>
 #include<iostream>
 
@@ -32,36 +33,33 @@ public:
 	hashTable();
 	hashTable(std::string filename);
 	~hashTable();
-	void addEmployee(std::string name, float salary, float comission);
+	void addEmployee(std::string name, float salary, float comission, bool resize);
 	void addContract(std::string parentName, std::string clientName, float value);
 	void deleteEmployee(std::string name);
 	void deleteContract(std::string parent, std::string clientName);
 	void saveTable(std::string filename);
 	void addFromFile(std::string filename);
 	void listTable();
+	void employeePrintByName(std::string name);
+	void employeePrintSearch(int compareFlag, int valueFlag, float searchValue);
 
 private:
 	float lowerLoadThreshold = .65f;
-	float upperLoadThreshold = .85f;
+	float upperLoadThreshold = .90f;
 	float loadFactor = 0.0;
-	int primes[19] = {
-		61, 97, 151, 211,257,307,
-		353,409,457,509,547,791,1009,1223,1553,1999,2273, 2543,3001
-	};
-	int numPrimes = 19;
-	int currPrime = -1; //-1 = BASE_SIZE, otherwise corresponding index to primes array
 
 	unsigned int tableSize = BASE_SIZE;
 	unsigned int currentNodeCount = 0;
 	hashNode** HashTable = nullptr;
 
+	hashNode* searchEmployeeByName(std::string employeeName);
 	unsigned int hash(std::string key);
 	int quadraticProbe(int startIndex);
 	void checkLoad();
 	void resize(bool factor);
 	void deleteTable();
 	void setupTable();
-	hashNode* searchEmployeeByName(std::string employeeName);
+	
 };
 
 #endif
