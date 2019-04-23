@@ -317,9 +317,66 @@ void hashTable::listTable() {
 }
 void hashTable::employeePrintSearch(int compareFlag, int valueFlag, float searchValue) {
 	/*compareFlag: -1 = '<'; 0 = '='; 1 = '>'
-	valueFlag: 0 = comissionRate; 1 = baseSalary 2= contract count 3 = net value
+	valueFlag: 0 = comissionRate; 1 = baseSalary 2= contract count
 	*/
 	std::vector<hashNode> toPrint;
+	float toCompare = 0;
+	bool  match = false;
+	for (int j = 0; j < tableSize; j++) {
+		match = false;
+		if (HashTable[j] != nullptr) {
+			switch (valueFlag) {
+			case 0:
+				toCompare = HashTable[j]->commissionRate;
+				break;
+			case 1:
+				toCompare = HashTable[j]->baseSalary;
+				break;
+			case 2:
+				toCompare = HashTable[j]->contracts.size();
+				break;
+			default:
+				return;
+				break;
+			}
+
+			switch (compareFlag) {
+			case -1:
+				if (toCompare <= searchValue) {
+					match = true;
+				}
+				break;
+			case 0:
+				if (toCompare == searchValue) {
+					match = true;
+				}
+				break;
+			case 1:
+				if (toCompare >= searchValue) {
+					match = true;
+				}
+				break;
+			default:
+				return;
+				break;
+			}
+			if (match) {
+				toPrint.push_back(*HashTable[j]);
+			}
+		}
+	}
+
+
+	std::cout << "Found " << toPrint.size() << " records matching your query:" << std::endl;
+	for (int i = 0; i < toPrint.size(); i++) {
+		std::cout << toPrint[i].employeeName << "- Base Salary: " << toPrint[i].baseSalary << " Comission Rate: " << toPrint[i].commissionRate << std::endl;
+		if (toPrint[i].contracts.size() > 0) {
+			std::list<llNode>::iterator it;
+			for (it = toPrint[i].contracts.begin(); it != toPrint[i].contracts.end(); ++it) {
+				std::cout << "-- " << it->clientName << "- Value: " << it->contractValue << std::endl;
+			}
+		}
+	}
 }
 void hashTable::employeePrintByName(std::string name) {
 	hashNode* search = searchEmployeeByName(name);
@@ -335,6 +392,15 @@ void hashTable::employeePrintByName(std::string name) {
 	else {
 		std::cout << "Employee of name " << name << " not found." << std::endl;
 	}
+}
+void contractPrintSearchValue(int compareFlag, float searchValue) {
+
+}
+void contractPrintSearchName(std::string name) {
+
+}
+void contractPrintHelp(std::vector<llNode> toPrint) {
+
 }
 int main() {
 	hashTable table;
@@ -388,13 +454,19 @@ int main() {
 	table.addEmployee("zakdsfdd3", 100000, .15, false);
 	table.addEmployee("zak43", 100000, .15, false);
 */
-	table.addEmployee("zak", 15000, .25, false);
+	table.addEmployee("zak", 20000, .25, false);
 	table.addContract("zak", "Valve", 50000);
 	table.addContract("zak", "Oracle", 1000000);
-	table.employeePrintByName("zak");
+	table.addEmployee("jack", 10000, .15, false);
+	table.addEmployee("Harry", 30000, .45, false);
+	table.addEmployee("Kiran", 5000, .05, false);
+	table.addEmployee("Connor", 15000, .15, false);
+	table.addEmployee("Mark Jason", 23000, .35, false);
 	//table.addFromFile("file.txt");
 	//table.saveTable("saved.txt");
 	table.listTable();
+	//table.employeePrintSearch(1, 1, 15000);
+	table.employeePrintSearch(-1, 0, 0.20);
 	//table.listTable();
 	return 0;
 }
