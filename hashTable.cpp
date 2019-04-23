@@ -402,28 +402,48 @@ void contractPrintSearchName(std::string name) {
 void contractPrintHelp(std::vector<llNode> toPrint) {
 
 }
-int menu() {
-	std::cout << "1. Load from file" << std::endl;
-	std::cout << "2. Save to file" << std::endl;
-	std::cout << "3. Add Employee" << std::endl;
-	std::cout << "4. Add Contract" << std::endl;
-	std::cout << "5. Delete Employee" << std::endl;
-	std::cout << "6. Delete Contract" << std::endl;
-	std::cout << "7. Search" << std::endl;
-	std::cout << "8. List Data" << std::endl;
-	std::cout << "9. Quit" << std::endl;
-	std::string response;
-	std::cin >> response;
-	int flag = 0;
-	while (flag == 0) {
-		if (response != "1" && response != "2" && response != "3" && response != "4" && response != "5" && response != "6" && response != "7" && response != "8" && response != "9") {
-			std::cout << "Please select a digit" << std::endl;
-			std::cin >> response;
-		} else {
-			flag = 1;
+int menu(int id) {
+	if (id == 0) {
+		std::cout << "1. Load from file" << std::endl;
+		std::cout << "2. Save to file" << std::endl;
+		std::cout << "3. Add Employee" << std::endl;
+		std::cout << "4. Add Contract" << std::endl;
+		std::cout << "5. Delete Employee" << std::endl;
+		std::cout << "6. Delete Contract" << std::endl;
+		std::cout << "7. Search" << std::endl;
+		std::cout << "8. List Data" << std::endl;
+		std::cout << "9. Quit" << std::endl;
+		std::string response;
+		std::cin >> response;
+		int flag = 0;
+		while (flag == 0) {
+			if (response != "1" && response != "2" && response != "3" && response != "4" && response != "5" && response != "6" && response != "7" && response != "8" && response != "9") {
+				std::cout << "Please select a digit" << std::endl;
+				std::cin >> response;
+			} else {
+				flag = 1;
+			}
 		}
+		return stoi(response);
 	}
-	return stoi(response);
+	if (id == 1) {
+		std::cout << "1. Search Employee" << std::endl;
+		std::cout << "2. List Range of Employees" << std::endl;
+		std::cout << "3. Search Contracts by Value" << std::endl;
+		std::cout << "4. Search Contracts by Name" << std::endl;
+		std::string response;
+		std::cin >> response;
+		int flag = 0;
+		while (flag == 0) {
+			if (response != "1" && response != "2" && response != "3" && response != "4") {
+				std::cout << "Please select a digit" << std::endl;
+				std::cin >> response;
+			} else {
+				flag = 1;
+			}
+		}
+		return stoi(response);		
+	}
 }
 int main() {
 	hashTable table;
@@ -483,7 +503,7 @@ int main() {
 	
 	//table.employeePrintSearch(1, 1, 15000);
 	for (int i = 0; i > -1; i++) {
-		int response = menu();
+		int response = menu(0);
 		if (response == 1) {
 			std::cout << "Filename?" << std::endl;
 			std::string filename;
@@ -542,7 +562,61 @@ int main() {
 		}
 		if (response == 7) {
 			int choice = menu(1);
-		}
+			if (choice == 1) {
+				std::cout << "Employee Name?" << std::endl;
+				std::string name;
+				std::cin >> name;
+				table.employeePrintByName(name);
+			}
+			if (choice == 2) {
+				std::cout << "1. Search by commission rate" << std::endl;
+				std::cout << "2. Search by salary" << std::endl;
+				std::cout << "3. Search by # of contracts" << std::endl;
+				std::string response;
+				std::cin >> response;
+				int t = stoi(response);
+				std::cout << std::endl;
+				std::cout << "1. Greater than" << std::endl;
+				std::cout << "2. Equal to" << std::endl;
+				std::cout << "3. Less than" << std::endl;
+				std::cin >> response;
+				int b = stoi(response);
+				if (b == 2) {
+					b = 0;
+				}
+				if (b == 3) {
+					b = -1;
+				}
+				std::cout << "Value?" << std::endl;
+				std::cin >> response;
+				float x = stof(response);
+				table.employeePrintSearch(b, t, x);
+			}
+			if (choice == 3) {
+				std::cout << "1. Greater than" << std::endl;
+				std::cout << "2. Equal to" << std::endl;
+				std::cout << "3. Less than" << std::endl;
+				std::cin >> response;
+				int b = stoi(response);
+				if (b == 2) {
+					b = 0;
+				}
+				if (b == 3) {
+					b = -1;
+				}
+				std::cout << "Value?" << std::endl;
+				float value;
+				std::cin >> rseponse;
+				value = stof(response);
+				table.contractPrintSearchValue(b, value);			
+			}
+			if (choice == 4) {
+				std::cout << "Name?" << std::endl;
+				string name;
+				std::cin >> name;
+				table.contractPrintSearchName(name);
+			}
+		} 
 		if (response == 8) {
 			table.listTable();
 		}
