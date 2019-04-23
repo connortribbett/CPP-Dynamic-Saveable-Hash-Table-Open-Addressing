@@ -517,7 +517,8 @@ int main() {
 			std::cout << "Employee Name?" << std::endl;
 			std::string name;
 			std::string namee;
-			std::cin >> namee;
+			std::cin.ignore();
+			getline(std::cin, namee);
 			std::cout << "Employee Salary?" << std::endl;
 			float salary;
 			std::cin >> name;
@@ -531,10 +532,12 @@ int main() {
 		if (response == 4) {
 			std::cout << "Employee Name?" << std::endl;
 			std::string name;
-			std::cin >> name;
+			std::cin.ignore();
+			getline(std::cin, name);
 			std::cout << "Client Name?" << std::endl;
 			std::string client;
-			std::cin >> client;
+			std::cin.ignore();
+			getline(std::cin, client);
 			std::cout << "Contract Value?" << std::endl;
 			std::string t;
 			std::cin >> t;
@@ -545,16 +548,19 @@ int main() {
 		if (response == 5) {
 			std::cout << "Employee Name?" << std::endl;
 			std::string name;
-			std::cin >> name;
+			std::cin.ignore();
+			getline(std::cin, name);
 			table.deleteEmployee(name);
 		}
 		if (response == 6) {
 			std::cout << "Employee Name?" << std::endl;
 			std::string name;
-			std::cin >> name;
+			std::cin.ignore();
+			getline(std::cin, name);
 			std::cout << "Client Name?" << std::endl;
 			std::string client;
-			std::cin >> client;
+			std::cin.ignore();
+			getline(std::cin, client);
 			table.deleteContract(name, client);
 		}
 		if (response == 7) {
@@ -562,7 +568,8 @@ int main() {
 			if (choice == 1) {
 				std::cout << "Employee Name?" << std::endl;
 				std::string name;
-				std::cin >> name;
+				std::cin.ignore();
+				getline(std::cin, name);
 				table.employeePrintByName(name);
 			}
 			if (choice == 2) {
@@ -611,7 +618,8 @@ int main() {
 			if (choice == 4) {
 				std::cout << "Name?" << std::endl;
 				std::string name;
-				std::cin >> name;
+				std::cin.ignore();
+				getline(std::cin, name);
 				table.contractPrintSearchName(name);
 			}
 		}

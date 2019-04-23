@@ -2,7 +2,6 @@
 Employee,Zak Flitter,10000,.128
 Contract,Zak Flitter,Sun Systems,10000
 Employee,By,15000,.1
-Contract,Bh,Apple,1000000
 Employee,Bg,15000,.1
 Employee,Bf,15000,.1
 Employee,Be,15000,.1
