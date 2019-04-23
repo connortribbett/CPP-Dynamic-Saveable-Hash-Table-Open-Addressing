@@ -402,6 +402,29 @@ void contractPrintSearchName(std::string name) {
 void contractPrintHelp(std::vector<llNode> toPrint) {
 
 }
+int menu() {
+	std::cout << "1. Load from file" << std::endl;
+	std::cout << "2. Save to file" << std::endl;
+	std::cout << "3. Add Employee" << std::endl;
+	std::cout << "4. Add Contract" << std::endl;
+	std::cout << "5. Delete Employee" << std::endl;
+	std::cout << "6. Delete Contract" << std::endl;
+	std::cout << "7. Search" << std::endl;
+	std::cout << "8. List Data" << std::endl;
+	std::cout << "9. Quit" << std::endl;
+	std::string response;
+	std::cin >> response;
+	int flag = 0;
+	while (flag == 0) {
+		if (response != "1" && response != "2" && response != "3" && response != "4" && response != "5" && response != "6" && response != "7" && response != "8" && response != "9") {
+			std::cout << "Please select a digit" << std::endl;
+			std::cin >> response;
+		} else {
+			flag = 1;
+		}
+	}
+	return stoi(response);
+}
 int main() {
 	hashTable table;
 	/*table.addEmployee("jerry", 0.0, 0.1, false);
@@ -454,19 +477,79 @@ int main() {
 	table.addEmployee("zakdsfdd3", 100000, .15, false);
 	table.addEmployee("zak43", 100000, .15, false);
 */
-	table.addEmployee("zak", 20000, .25, false);
-	table.addContract("zak", "Valve", 50000);
-	table.addContract("zak", "Oracle", 1000000);
-	table.addEmployee("jack", 10000, .15, false);
-	table.addEmployee("Harry", 30000, .45, false);
-	table.addEmployee("Kiran", 5000, .05, false);
-	table.addEmployee("Connor", 15000, .15, false);
-	table.addEmployee("Mark Jason", 23000, .35, false);
+
 	//table.addFromFile("file.txt");
 	//table.saveTable("saved.txt");
-	table.listTable();
+	
 	//table.employeePrintSearch(1, 1, 15000);
-	table.employeePrintSearch(-1, 0, 0.20);
+	for (int i = 0; i > -1; i++) {
+		int response = menu();
+		if (response == 1) {
+			std::cout << "Filename?" << std::endl;
+			std::string filename;
+			std::cin >> filename;
+			table.addFromFile(filename);
+		}
+		if (response == 2) {
+			std::cout << "Filename?" << std::endl;
+			std::string filename;
+			std::cin >> filename;
+			table.saveTable(filename);
+		}
+		if (response == 3) {
+			std::cout << "Employee Name?" << std::endl;
+			std::string name;
+			std::string namee;
+			std::cin >> namee;
+			std::cout << "Employee Salary?" << std::endl;
+			float salary;
+			std::cin >> name;
+			salary = stof(name);
+			std::cout << "Employee Commission?" << std::endl;
+			std::cin >> name;
+			float commission;
+			commission = stof(name);
+			table.addEmployee(namee, salary, commission, false);
+		}
+		if (response == 4) {
+			std::cout << "Employee Name?" << std::endl;
+			std::string name;
+			std::cin >> name;
+			std::cout << "Client Name?" << std::endl;
+			std::string client;
+			std::cin >> client;
+			std::cout << "Contract Value?" << std::endl;
+			std::string t;
+			std::cin >> t;
+			float commission;
+			commission = stof(t);
+			table.addContract(name, client, commission);			
+		}
+		if (response == 5) {
+			std::cout << "Employee Name?" << std::endl;
+			std::string name;
+			std::cin >> name;
+			table.deleteEmployee(name);			
+		}
+		if (response == 6) {
+			std::cout << "Employee Name?" << std::endl;
+			std::string name;
+			std::cin >> name;
+			std::cout << "Client Name?" << std::endl;
+			std::string client;
+			std::cin >> client;
+			table.deleteContract(name, client);
+		}
+		if (response == 7) {
+			int choice = menu(1);
+		}
+		if (response == 8) {
+			table.listTable();
+		}
+		if (response == 9) {
+			i = -2;
+		}
+	}
 	//table.listTable();
 	return 0;
 }
