@@ -596,6 +596,7 @@ int main() {
 				std::cout << "1. Greater than" << std::endl;
 				std::cout << "2. Equal to" << std::endl;
 				std::cout << "3. Less than" << std::endl;
+				std::string response;
 				std::cin >> response;
 				int b = stoi(response);
 				if (b == 2) {
@@ -606,13 +607,13 @@ int main() {
 				}
 				std::cout << "Value?" << std::endl;
 				float value;
-				std::cin >> rseponse;
+				std::cin >> response;
 				value = stof(response);
 				table.contractPrintSearchValue(b, value);			
 			}
 			if (choice == 4) {
 				std::cout << "Name?" << std::endl;
-				string name;
+				std::string name;
 				std::cin >> name;
 				table.contractPrintSearchName(name);
 			}
